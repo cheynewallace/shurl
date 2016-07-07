@@ -1,18 +1,35 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
-	"github.com/gorilla/mux"
-	"html/template"
+	"log"
 	"net/http"
+	"html/template"
+	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 )
 
+var db *sql.DB
+
 func redirHandler(w http.ResponseWriter, r *http.Request) {
+	page, err := queryPage(r.URL.Path[1:])
+	if err != nil || page.LongURL == "" {
+		fmt.Fprintf(w, "No Matches Found")
+		return
+	}
+	fmt.Printf("Redirecting %s To %s\n", page.ShortURL, page.LongURL)
+	http.Redirect(w, r, page.LongURL, 301)
+	return
+}
+
+func fileRedirHandler(w http.ResponseWriter, r *http.Request) {
 	p2, err := loadPage(r.URL.Path[1:])
 	if err != nil {
 		fmt.Fprintf(w, "No Matches Found")
 		return
 	}
+
 	fmt.Println(fmt.Sprintf("%s Redirecting To: %s", r.URL.Path[1:], string(p2.LongURL)))
 	http.Redirect(w, r, string(p2.LongURL), 301)
 	return
@@ -25,9 +42,13 @@ func newHandler(w http.ResponseWriter, r *http.Request) {
 
 func createHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	page := &Page{ShortPath: r.FormValue("shortpath"), LongURL: r.FormValue("longurl")}
-	page.save()
-	fmt.Println(fmt.Sprintf("%s - %s", page.ShortPath, page.LongURL))
+	page := &Page{ShortURL: r.FormValue("shortpath"), LongURL: r.FormValue("longurl")}
+	err := page.save()
+	if err != nil {
+		fmt.Fprintf(w, err.Error())
+		return
+	}
+	fmt.Println(fmt.Sprintf("Created: %s Redirects To %s", page.ShortURL, page.LongURL))
 	renderTemplate(w, "views/create.html", page)
 }
 
@@ -40,10 +61,22 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 }
 
 func main() {
+	// Init Database
+	// https://godoc.org/github.com/lib/pq
+	var err error
+	db, err = sql.Open("postgres", "host=localhost user=shurl password=password123 dbname=shurl sslmode=disable")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err = db.Ping(); err != nil {
+		log.Fatal(err)
+	}
+
 	r := mux.NewRouter()
 	r.HandleFunc("/new", newHandler)
 	r.HandleFunc("/create", createHandler)
-	r.HandleFunc("/{id:[a-z0-9]{4}}", redirHandler)
+	r.HandleFunc("/{id:[a-z0-9]{3,8}}", redirHandler)
 	http.Handle("/", r)
 
 	http.ListenAndServe(":8080", nil)
