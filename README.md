@@ -3,7 +3,6 @@ Shurl is a GoLang link shortening web service based on a PostgreSQL database.
 
 It provides a basic web interface for adding new custom short URLs and allows you to choose a string between 3 and 8 characters to shorten the long URL by.
 
-Eg
 `http://www.ourlongdomain.com/pages/20160801/something` to `http://do.ma/shur`
 
 (BYO short domain name)
