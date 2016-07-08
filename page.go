@@ -16,11 +16,6 @@ type Page struct {
 }
 
 // DB Based
-func (p *Page) save() error {
-	_, err := db.Exec("INSERT INTO pages (shorturl, longurl) VALUES ($1, $2)", p.ShortURL, p.LongURL)
-	return err
-}
-
 func queryPage(path string) (*Page, error) {
 	var id int8
 	var shorturl string
@@ -31,6 +26,11 @@ func queryPage(path string) (*Page, error) {
 		return nil, err
 	}
 	return &Page{ID: id, LongURL: longurl, ShortURL: shorturl}, nil
+}
+
+func (p *Page) save() error {
+	_, err := db.Exec("INSERT INTO pages (shorturl, longurl) VALUES ($1, $2)", p.ShortURL, p.LongURL)
+	return err
 }
 
 // File Store Based
