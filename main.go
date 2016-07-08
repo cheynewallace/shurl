@@ -82,8 +82,8 @@ func main() {
 
 	r := mux.NewRouter()
 	s := http.StripPrefix("/public/", http.FileServer(http.Dir("./public/")))
-	r.HandleFunc("/new", newHandler)
-	r.HandleFunc("/create", createHandler)
+	r.HandleFunc("/new", newHandler).Methods("GET")
+	r.HandleFunc("/create", createHandler).Methods("POST")
 	r.PathPrefix("/public/").Handler(s)
 	r.HandleFunc("/{id:[a-z0-9]{3,8}}", redirHandler)
 	http.Handle("/", r)

@@ -7,10 +7,10 @@
       <h1>Create Short URL</h1>
       <form action="/create" method="POST">
         <div>
-          <input type="text" name="shortpath" rows="20" cols="80" placeholder="Short URL (3 to 8 chars)"></input>
+          <input type="text" title="Minimum 3 chars, maximum 8" required name="shortpath" pattern=".{3,8}" maxlength="8" minleng rows="20" cols="80" placeholder="Short URL (3 to 8 chars)"></input>
         </div>
         <div>
-          <input type="text" name="longurl" rows="20" cols="80" placeholder="URL To Shorten"></input>
+          <input type="text" required name="longurl" rows="20" cols="80" placeholder="URL To Shorten"></input>
         </div>
         <div>
           <input type="submit" value="Save">

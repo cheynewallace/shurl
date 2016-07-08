@@ -7,6 +7,14 @@ It provides a basic web interface for adding new custom short URLs and allows yo
 
 (BYO short domain name)
 
+## Usage
+Creates web server on port 8080
+In development, you can just run `go run *.go` from the directory, then open a browser and hit http://localhost:8080
+In production, `go build` the binary first and then run it
+
+### Adding New URLs
+Hit `/new` to view the new URL form, enter the long URL and the short URL you wish to use, click create
+
 ## Database Configuration
 Shurl will connect to your Postgres database using environment variable values.  They are `SHURL_DB_HOST` `SHURL_DB_USER` `SHURL_DB_PASS` and `SHURL_DB_NAME`.
 Modify and add the following lines to your `.bashrc` or relevant profile
