@@ -17,3 +17,5 @@ export SHURL_DB_USER=shurl
 export SHURL_DB_PASS=passwd123
 export SHURL_DB_NAME=shurl
 ```
+### Schema
+You can create the single `pages` table required by the service by running `pages.sql` found under the sql folder on your database
