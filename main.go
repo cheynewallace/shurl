@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 	"net/http"
 	"html/template"
 	"github.com/gorilla/mux"
@@ -64,7 +65,7 @@ func main() {
 	// Init Database
 	// https://godoc.org/github.com/lib/pq
 	var err error
-	db, err = sql.Open("postgres", "host=localhost user=shurl password=password123 dbname=shurl sslmode=disable")
+	db, err = sql.Open("postgres", fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",os.Getenv("SHURL_DB_HOST"), os.Getenv("SHURL_DB_USER"), os.Getenv("SHURL_DB_PASS"), os.Getenv("SHURL_DB_NAME")))
 	if err != nil {
 		log.Fatal(err)
 	}
