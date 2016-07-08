@@ -3,12 +3,12 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
-	"os"
-	"net/http"
-	"html/template"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
+	"html/template"
+	"log"
+	"net/http"
+	"os"
 )
 
 var db *sql.DB
@@ -61,11 +61,17 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 	}
 }
 
+func serveResource(w http.ResponseWriter, req *http.Request) {
+	log.Fatal("DGFDSG")
+	path := "../../public" + req.URL.Path
+	http.ServeFile(w, req, path)
+}
+
 func main() {
 	// Init Database
 	// https://godoc.org/github.com/lib/pq
 	var err error
-	db, err = sql.Open("postgres", fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",os.Getenv("SHURL_DB_HOST"), os.Getenv("SHURL_DB_USER"), os.Getenv("SHURL_DB_PASS"), os.Getenv("SHURL_DB_NAME")))
+	db, err = sql.Open("postgres", fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", os.Getenv("SHURL_DB_HOST"), os.Getenv("SHURL_DB_USER"), os.Getenv("SHURL_DB_PASS"), os.Getenv("SHURL_DB_NAME")))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -75,8 +81,10 @@ func main() {
 	}
 
 	r := mux.NewRouter()
+	s := http.StripPrefix("/public/", http.FileServer(http.Dir("./public/")))
 	r.HandleFunc("/new", newHandler)
 	r.HandleFunc("/create", createHandler)
+	r.PathPrefix("/public/").Handler(s)
 	r.HandleFunc("/{id:[a-z0-9]{3,8}}", redirHandler)
 	http.Handle("/", r)
 

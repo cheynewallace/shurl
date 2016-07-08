@@ -1,3 +1,12 @@
-<h1>Created {{.ShortURL}}</h1>
-
-<h2>Directs To: {{.LongURL}}</h2>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="/public/style.css">
+  </head>
+  <body>
+    <div id="container">
+    <link rel="stylesheet" type="text/css" href="/public/style.css">
+      <h1>Created</h1>
+      <h2><i>/{{.ShortURL}} redirects to {{.LongURL}}</i></h2>
+    </div>
+  </body>
+</html>
