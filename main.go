@@ -24,18 +24,6 @@ func redirHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func fileRedirHandler(w http.ResponseWriter, r *http.Request) {
-	p2, err := loadPage(r.URL.Path[1:])
-	if err != nil {
-		fmt.Fprintf(w, "No Matches Found")
-		return
-	}
-
-	fmt.Println(fmt.Sprintf("%s Redirecting To: %s", r.URL.Path[1:], string(p2.LongURL)))
-	http.Redirect(w, r, string(p2.LongURL), 301)
-	return
-}
-
 func newHandler(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("views/new.html")
 	t.Execute(w, nil)
@@ -59,12 +47,6 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 	} else {
 		t.Execute(w, p)
 	}
-}
-
-func serveResource(w http.ResponseWriter, req *http.Request) {
-	log.Fatal("DGFDSG")
-	path := "../../public" + req.URL.Path
-	http.ServeFile(w, req, path)
 }
 
 func main() {
